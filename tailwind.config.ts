@@ -15,7 +15,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        serif: ["Play", "sans-serif"],
       },
+      boxShadow:{
+        '3xl': '0 0 68px rgba(0, 0, 0, 0.05)',
+      }
     },
   },
   plugins: [],
