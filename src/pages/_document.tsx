@@ -5,7 +5,7 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link rel="shortcut icon" href="alarmclock.svg" type="image/svg" />
+          <link rel="shortcut icon" href="/public/icons/alarmclock.svg" type="image/svg+xml" />
         </Head>
         <body>
           <Main />

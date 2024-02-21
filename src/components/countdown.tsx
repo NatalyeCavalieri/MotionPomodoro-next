@@ -1,9 +1,12 @@
 "use client"
 import { useState, useEffect } from "react"
 
+let countdownTimeout: NodeJS.Timeout
+
 export function Countdown() {
-  const [time, setTime] = useState(23 * 60)
-  const [active, setActive] = useState(false)
+  const [time, setTime] = useState(0.1 * 60)
+  const [isActive, setIsActive] = useState(false)
+  const [hasFinished, setHasFinished] = useState(false)
 
   const minutes = Math.floor(time / 60)
   const seconds = time % 60
@@ -11,17 +14,26 @@ export function Countdown() {
   const [minuteLeft, minuteRight] = String(minutes).padStart(2, "0").split("")
   const [secondLeft, secondRight] = String(seconds).padStart(2, "0").split("")
 
-  function StartCountdown(){
-    setActive(true)
+  function StartCountdown() {
+    setIsActive(true)
   }
 
-  useEffect(()=> {
-    if(active && time > 0){
-      setTimeout(() => {
+  function ResetCountdown() {
+    clearTimeout(countdownTimeout)
+    setIsActive(false)
+    setTime(0.1 * 60)
+  }
+
+  useEffect(() => {
+    if (isActive && time > 0) {
+      countdownTimeout = setTimeout(() => {
         setTime(time - 1)
       }, 1000)
+    } else if (isActive && time === 0) {
+      setHasFinished(true)
+      setIsActive(false)
     }
-  }, [active, time])
+  }, [isActive, time])
 
   return (
     <div>
@@ -40,13 +52,36 @@ export function Countdown() {
           <span className="flex-1 font-serif">{secondRight}</span>
         </div>
       </div>
-      <button
-        className="w-full h-[5rem] mt-8 flex items-center justify-center border-[0] rounded-md bg-indigo-600 text-white text-xl font-semibold hover:bg-indigo-800 duration-300"
-        type="button"
-        onClick={StartCountdown}
-      >
-        Iniciar um ciclo
-      </button>
+
+      {hasFinished ? (
+        <button
+          disabled
+          className="w-full h-[5rem] mt-8 flex items-center justify-center border-[0] rounded-md bg-green-100 text-gray-700 text-xl font-semibold border-b-4 border-green-600"
+          type="button"
+        >
+          Ciclo encerrado
+        </button>
+      ) : (
+        <>
+          {isActive ? (
+            <button
+              className="w-full h-[5rem] mt-8 flex items-center justify-center border-[0] rounded-md bg-red-500 text-white text-xl font-semibold hover:bg-red-600 duration-300"
+              type="button"
+              onClick={ResetCountdown}
+            >
+              Abandonar ciclo
+            </button>
+          ) : (
+            <button
+              className="w-full h-[5rem] mt-8 flex items-center justify-center border-[0] rounded-md bg-indigo-600 text-white text-xl font-semibold hover:bg-indigo-800 duration-300"
+              type="button"
+              onClick={StartCountdown}
+            >
+              Iniciar ciclo
+            </button>
+          )}
+        </>
+      )}
     </div>
   )
 }
